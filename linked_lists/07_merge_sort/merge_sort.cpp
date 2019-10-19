@@ -14,6 +14,7 @@ void push(Node** head_ref, int data){
     Node* temp = new Node(data);
     temp->next = (*head_ref);
     (*head_ref) = temp;
+    return;
 }
 
 void printList(Node** head_ref){
@@ -23,6 +24,32 @@ void printList(Node** head_ref){
         cout << temp->data << " ";
         temp = temp->next;
     }
+    return;
+}
+
+Node *reverseBySize(Node *head, int k)  
+{  
+    Node* current = head;  
+    Node* next = NULL;  
+    Node* prev = NULL;  
+    int count = 0;  
+      
+    /*reverse first k nodes of the linked list */
+    while (current != NULL && count < k)  
+    {  
+        next = current->next;  
+        current->next = prev;  
+        prev = current;  
+        current = next;  
+        count++;  
+    }  
+      
+    /* next is now a pointer to (k+1)th node. Recursively call for the list starting from current. And make rest of the list as next of first node */
+    if (next != NULL)  
+        head->next = reverseBySize(next, k);  
+  
+    /* prev is new head of the input list */
+    return prev;  
 }
 
 void reverseList(Node** head_ref){ 
@@ -55,7 +82,7 @@ Node* SortedMerge(Node* a, Node* b){
 	else if (b == NULL) 
 		return (a); 
 
-	/* Pick either a or b, and recur */
+	/* Pick either a or b, and recurse */
 	if (a->data <= b->data) { 
 		result = a; 
 		result->next = SortedMerge(a->next, b); 
@@ -162,6 +189,10 @@ int main(){
     reverseList(&c);
     cout << endl << "List C : Before : ";
     printList(&c);
+
+    c = reverseBySize(c, 3);  
+    cout<<"\nReversed By size : ";  
+    printList(&c); 
 
     mergeSort(&c);
 
