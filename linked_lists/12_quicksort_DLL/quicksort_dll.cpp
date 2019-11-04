@@ -17,27 +17,30 @@ struct Node
 /* Function definitions */
 void pushDLL(Node** , int);
 void printDLL(Node**);
-void reverseDLL(Node**);
+void quickSort(Node**);
+void _quickSort(Node*, Node*);
+Node* partition(Node*, Node*);
+void swap(int*, int*);
 
 /* handler function */
 int main(){
     Node *a = NULL;
 
     /* Push Data into DLL */
-    pushDLL(&a, 25);
-    pushDLL(&a, 43);
-    pushDLL(&a, 7);
+    // pushDLL(&a, 76);
+    // pushDLL(&a, 86);
     pushDLL(&a, 18);
-    pushDLL(&a, 5);
-    pushDLL(&a, 15);
+    pushDLL(&a, 18);
+    pushDLL(&a, 18);
+    // pushDLL(&a, 25);
+    // pushDLL(&a, 1);
+    // pushDLL(&a, 12);
     
     cout << endl << "Before reversing : ";
     printDLL(&a);
 
-
-
-    cout << endl << "After reversing : ";
-    reverseDLL(&a);
+    cout << endl << "After Quick Sorting : ";
+    quickSort(&a);
     printDLL(&a);
 
     return 0;
@@ -86,24 +89,48 @@ void printDLL(Node** head_ref){
 
 }
 
-void reverseDLL(Node** head_ref){
-    Node *before = NULL, *cur = NULL, *later = NULL, *temp = NULL;
-    cur = (*head_ref);
-    /* Base cases */
-    if(*head_ref == NULL){
-        return;
-    }
-    while(cur && cur->next){
-        later = cur->next;
-        cur->next = before;
-        cur->prev = later;
+void swap(int* a, int* b){
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 
-        before = cur;
-        cur = later;        
-    }
-    cur->next = before;
-    cur->prev = NULL;
-
-    (*head_ref) = cur;
     return;
+}
+
+
+Node*  partition(Node* l, Node* h){
+    int pivot = h->data;
+    Node* i = l->prev;
+    for(Node* j = l; j != h; j = j->next){
+        if(j->data <= pivot){
+            i = (i == NULL) ? l : i->next;
+            swap(&(i->data), &(j->data));
+        }
+    }
+    i = (i == NULL) ? l : i->next;
+    swap(&(i->data), &(h->data));
+    return i;
+
+}
+
+void _quickSort(Node* l, Node* h){
+
+    if(h != NULL && l != h && l != h->next){
+
+        Node* p = partition(l, h);
+        _quickSort(l, p->prev);
+        _quickSort(p->next, h);
+    } 
+    
+}
+
+
+void quickSort(Node** head_ref){
+    Node* lastNode = (*head_ref);
+    while(lastNode && lastNode->next){
+        lastNode = lastNode->next;
+    }
+
+    _quickSort((*head_ref), lastNode);
+
 }
